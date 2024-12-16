@@ -18,12 +18,12 @@ public class UserController {
     public UserController(UserService userService1){
         this.userService = userService1;
     }
-
+/*
     @GetMapping(path = "/get/ID/{userId}")
     public User getUserDetails(@PathVariable Integer userId){
         return new User(1, "emanmohamed", "1234", "eman@gmail.com", "Eman Mohamed",
                 "01234", "Admin", "Female", "Active");
-    }
+    }*/
 
 
 
