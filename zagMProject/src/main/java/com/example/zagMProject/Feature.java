@@ -9,5 +9,6 @@ public interface Feature {
     public void Update(User user, int id);
     public User GetUserDetails(int id);
     public void Delete(String name);
-    public List<User> Filter(User user);
+    public List<User> Filter(String status,String role);
+    public List<User> GetAllUsers();
 }
