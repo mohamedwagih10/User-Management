@@ -6,10 +6,15 @@ import com.example.zagMProject.service.UserService;
 import jakarta.validation.Valid;
 import jdk.dynalink.linker.LinkerServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/user")
@@ -21,57 +26,39 @@ public class UserController {
         this.userService = userService1;
     }
     @GetMapping("/User/{id}")
-    public User data(@PathVariable int id){
-        return userService.GetUserDetails(id);
+    public ResponseEntity<User> data(@PathVariable @Valid int id){
+        User user =userService.GetUserDetails(id);
+        return ResponseEntity.ok(user);
     }
     @GetMapping("/Users")
-    public List<User> details(){
-        return userService.GetAllUsers();
+    public ResponseEntity<List<User>> details(){
+        List<User> users=userService.GetAllUsers();
+        return ResponseEntity.ok(users);
     }
     @PostMapping("/add")
-    public void create(@RequestBody User user){
+    public ResponseEntity<String> create(@RequestBody @Valid  User user){
          userService.Create(user);
+         return ResponseEntity.status(HttpStatus.CREATED).body("User Created");
     }
 
 @PutMapping("/update/{id}")
-    public void update(@PathVariable int id , @RequestBody  User user){
+    public ResponseEntity<String> update(@PathVariable @Valid int id , @RequestBody @Valid User user){
         userService.Update(user,id);
+       return ResponseEntity.ok("User is updated");
 }
-@DeleteMapping("/delate/{userFullName}")
-    public void delete(@PathVariable String userFullName){
-        userService.Delete(userFullName);
+@DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> delete(@PathVariable @Valid  int id){
+        userService.Delete(id);
+        return ResponseEntity.ok("is deleted");
 }
 
 @GetMapping("/flitering")
-    public List<User> filter(@RequestParam String status, @RequestParam String role){
-      return   userService.Filter(status,role);
+    public ResponseEntity<List<User>> filter(@RequestParam @Valid String status, @RequestParam @Valid String role){
+        List<User> users=userService.Filter(status,role);
+      return ResponseEntity.ok(users);
 }
-
-
-
-
-/*
-    @GetMapping(path = "/get/ID/{userId}")
-    public User getUserDetails(@PathVariable Integer userId){
-        return new User(1, "emanmohamed", "1234", "eman@gmail.com", "Eman Mohamed",
-                "01234", "Admin", "Female", "Active");
-    }*/
-
-
-
-
-
-
-//    private List<User> users = new ArrayList<>();
-//
- //   @PostMapping(path = "/adderse")
- //   public void createUser(@Valid @RequestBody User user){
-//        users.add(user);
-//    }
-//
-//    @DeleteMapping(path = "/delete/username/{userName}")
-//    public String deleteUserDetails(String userName){
-//        this.users = null;
-//        return "Deleted successfully";
-//    }
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<List> handelarBlindException(BindException ex){
+        return new ResponseEntity<>(ex.getAllErrors(), HttpStatus.BAD_REQUEST);
+    }
 }

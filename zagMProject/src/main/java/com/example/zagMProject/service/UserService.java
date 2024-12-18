@@ -52,10 +52,10 @@ public class UserService implements Feature {
     }
 
     @Override
-    public void Delete(String name) {
+    public void Delete(int id) {
         boolean isdeleted = false;
         for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getUserFullName().equals(name)) {
+            if (users.get(i).getUserId().equals(id)) {
                 users.remove(users.get(i));
                 isdeleted = true;
                // System.out.println("is Deleted");
@@ -67,7 +67,7 @@ public class UserService implements Feature {
     @Override
     public List<User> Filter(String status, String role) {
 
-        return users.stream().filter(user -> (status ==null || user.getUserStatus().equalsIgnoreCase(status))&&(role ==null ||user.getUserRole().equalsIgnoreCase(role))).collect(Collectors.toUnmodifiableList());
+        return users.stream().filter(user -> ( user.getUserStatus().equalsIgnoreCase(status))&&(user.getUserRole().equalsIgnoreCase(role))).collect(Collectors.toUnmodifiableList());
         // filter the null and what i will pass .equalsIgnoreCase compare without look at capital or small
     }
 
